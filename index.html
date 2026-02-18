@@ -34,7 +34,13 @@
             
             navigator.geolocation.getCurrentPosition((pos) => {
                 status.innerHTML = "> Đang gửi dữ liệu...";
-                const url = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id}&text=${encodeURIComponent("🛠 BÁO CÁO:\n📍 Xe 54 4val tại: https://www.google.com/maps?q=$" + pos.coords.latitude + "," + pos.coords.longitude)}`;
+                
+                // Đã loại bỏ các ký hiệu thừa để tin nhắn gọn sạch
+                const lat = pos.coords.latitude;
+                const lon = pos.coords.longitude;
+                const message = "🛠 BÁO CÁO:\n📍 Xe 54 4val tại: http://google.com/maps?q=" + lat + "," + lon;
+                
+                const url = "https://api.telegram.org/bot" + token + "/sendMessage?chat_id=" + chat_id + "&text=" + encodeURIComponent(message);
                 
                 fetch(url).then(() => {
                     status.innerHTML = "<span style='color: #4cd137;'>> HOÀN TẤT!</span>";
